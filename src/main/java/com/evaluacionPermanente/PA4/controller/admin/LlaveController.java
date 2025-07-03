@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -38,9 +39,38 @@ public class LlaveController {
         return "/admin/llaves/index";
     }
 
+    @PostMapping("/seleccionarGanador")
+    public String seleccionarGanador(@RequestParam int idLlave, @RequestParam int idGanador, RedirectAttributes redirectAttributes) {
+
+        // SELECCIONAMOS LA LLAVE QUE VAMOS A MODIFICAR
+        Llave llave = llaveRepository.findById(idLlave).orElse(null);
+
+        //BUSCAMOS AL KARATECA
+        Karateca ganador = karatecaRepository.findById(idGanador).orElse(null);
+
+        //SI EXISTEN
+        if (llave != null && ganador != null) {
+            llave.setGanador(ganador);
+            llaveRepository.save(llave);
+            if (ganador.equals(llave.getId_karateca1())) {
+                Karateca perdedor = llave.getId_karateca2();
+                perdedor.setEstado("eliminado");
+                karatecaRepository.save(perdedor);
+            } else {
+                Karateca perdedor = llave.getId_karateca1();
+                perdedor.setEstado("eliminado");
+                karatecaRepository.save(perdedor);
+            }
+            redirectAttributes.addFlashAttribute("exito", "Ganador asignado exitosamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Error al asignar ganador.");
+        }
+
+        return "redirect:/admin/llaves"; // Redirige a la misma vista
+    }
+
     @PostMapping("/generar")
     public String generar(RedirectAttributes ra){
-
         //VERIFICAMOS QUE HAYA PARTICIPANTES Y QUE TODAS LAS LLAVES SEAN "FINALIZADO"
         //PODRIA HABER CREADO UNA FUNCION QUE AGRUPE ESTAS DOS FUNCIONES
         if(llaveService.hayParticipantes()&&llaveService.todasLasLlavesHanFinalizado()) {
@@ -48,7 +78,7 @@ public class LlaveController {
             //AQUI SE PODRIA GENERAR UN FLASH ATTRIBUTE CON UN MENSAJE DE EXITO SI HAY TIEMPO LO IMPLEMENTO
         }
         else{
-            ra.addFlashAttribute("mensaje", "Las llaves no han terminado");
+            ra.addFlashAttribute("error", "Las llaves no han terminado");
         }
         //SEA CUAL SEA EL RESULTADO, LOS DOS REGRESAN AL INDEX DE LLAVE
         return "redirect:/admin/llaves";

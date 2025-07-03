@@ -56,20 +56,20 @@ public class LlaveService {
         return "Ronda Eliminatoria";
     }
 
-    public void cerrarRondasAnteriores(){
-        if(!llaveRepository.findAll().isEmpty()){
-            for (Llave llave:llaveRepository.findAll()){
-                if(llave.getGanador().equals(llave.getId_karateca1())){
-                    llave.getId_karateca2().setEstado("eliminado");
-                }else{
-                    llave.getId_karateca1().setEstado("activo");
-                }
-                llave.setEstado("finalizado");
-                llaveRepository.save(llave);
-                karatecaRepository.saveAll(List.of(llave.getId_karateca1(), llave.getId_karateca2()));
-            }
-        }
-    }
+//    public void cerrarRondasAnteriores(){
+//        if(!llaveRepository.findAll().isEmpty()){
+//            for (Llave llave:llaveRepository.findAll()){
+//                if(llave.getGanador().equals(llave.getId_karateca1())){
+//                    llave.getId_karateca2().setEstado("eliminado");
+//                }else{
+//                    llave.getId_karateca1().setEstado("activo");
+//                }
+//                llave.setEstado("finalizado");
+//                llaveRepository.save(llave);
+//                karatecaRepository.saveAll(List.of(llave.getId_karateca1(), llave.getId_karateca2()));
+//            }
+//        }
+//    }
 
     public Map<String, List<Karateca>> agruparKaratecas(List<Karateca> karatecas) {
 
@@ -119,7 +119,6 @@ public class LlaveService {
     }
 
     public void generarRonda(){
-
         //OBTENEMOS A TODOS LOS KARATECAS ACTIVOS
         List<Karateca>karatecas= karatecaRepository.findByEstadoIgnoreCase("activo");
 

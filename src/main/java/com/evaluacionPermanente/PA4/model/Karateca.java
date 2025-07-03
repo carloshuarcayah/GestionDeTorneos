@@ -36,10 +36,6 @@ public class Karateca {
     @Column(nullable = false)
     private Sexo sexo;
 
-    //IMPLEMENTAMOS UNA NUEVA TABLA PARA SABER A QUE CATEGORIA PERTENECE EL PELEADOR
-    @Column(nullable = false)
-    private String categoria;
-
     @Min(1)
     @Max(10)
     private int rango;
