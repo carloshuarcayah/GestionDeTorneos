@@ -38,7 +38,7 @@ public class LlaveService {
 
     //CATEGORIZAR POR PESO
     //LOS INFANTILES PODRIAN TENER SU PROPIA CATEGORIA DE PESO
-    //TAL VEZ LO IMPLEMENTE SI ME DA TIEMPO
+    //TAL VEZ LO IMPLEMENTE SI ME DA TIEMPO -ASI NOMAS ESTA BIEN
     public String categorizarPeso(float peso){
         if(peso<=40) return "pluma";
         else if(peso<=50) return "ligero";
@@ -56,21 +56,6 @@ public class LlaveService {
         return "Ronda Eliminatoria";
     }
 
-//    public void cerrarRondasAnteriores(){
-//        if(!llaveRepository.findAll().isEmpty()){
-//            for (Llave llave:llaveRepository.findAll()){
-//                if(llave.getGanador().equals(llave.getId_karateca1())){
-//                    llave.getId_karateca2().setEstado("eliminado");
-//                }else{
-//                    llave.getId_karateca1().setEstado("activo");
-//                }
-//                llave.setEstado("finalizado");
-//                llaveRepository.save(llave);
-//                karatecaRepository.saveAll(List.of(llave.getId_karateca1(), llave.getId_karateca2()));
-//            }
-//        }
-//    }
-
     public Map<String, List<Karateca>> agruparKaratecas(List<Karateca> karatecas) {
 
         return karatecas.stream().collect(Collectors.groupingBy(
@@ -82,9 +67,10 @@ public class LlaveService {
 
     public void emparejarPeleadores(List<Karateca>peleadores, String ronda){
 
+        int total = peleadores.size()-1; //TOTAL DE PELEADORES
+
         //EN CADA ITERACION VAMOS AGRUPANDO DE DOS EN DOS A LOS PELEADORES
-        //SI EL INDICE ES IGUAL AL ULTIMO KARATECA SALIMOOS
-        for (int i = 0; i < peleadores.size() - 1; i += 2) {
+        for (int i = 0; i < total; i += 2) {
             Llave llave = new Llave();
             llave.setId_karateca1(peleadores.get(i));
             llave.setId_karateca2(peleadores.get(i + 1));
@@ -97,9 +83,11 @@ public class LlaveService {
         //SI SOBRO UN LUCHADOR
         if (peleadores.size() % 2 != 0) {
             Llave llave = new Llave();
-            llave.setId_karateca1(peleadores.get(peleadores.size() - 1));
+            Karateca solitario = peleadores.get(peleadores.size() - 1);//KARATECA SIN
+
+            llave.setId_karateca1(solitario);
             llave.setId_karateca2(null); // opcional: duplicado o null
-            llave.setGanador(peleadores.get(peleadores.size() - 1));
+            llave.setGanador(solitario);
             llave.setEstado("activo"); //INICIAMOS ESTA RONDA COMO FINALIZADA PORQUE NO HAY RIVAL
             llave.setRonda(ronda);
             llaveRepository.save(llave);
@@ -128,8 +116,8 @@ public class LlaveService {
         Map<String,List<Karateca>>grupos=agruparKaratecas(karatecas);
 
         for (Map.Entry<String, List<Karateca>> entry : grupos.entrySet()) {
-
             List<Karateca> peleadores = entry.getValue();
+
             String ronda = nombreRonda(peleadores.size());
             Collections.shuffle(peleadores); // aleatorio para variedad
 

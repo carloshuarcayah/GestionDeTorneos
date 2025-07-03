@@ -3,43 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Academias</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<a th:href="@{/admin/home}">Regresar</a>
+<a th:href="@{/admin/home}" class="btn btn-success btn-sm rounded px-4 py-2 fw-semibold shadow-sm">Regresar</a>
+<div class="container">
 
+    <h1 class="text-center my-4">Academias registradas</h1>
 
-<h1>Academias registradas</h1>
+    <div th:if="${#lists.isEmpty(academias)}" class="text-center text-muted">
+        <p>No se encontró ninguna academia.</p>
+    </div>
 
-<div th:if="${#lists.isEmpty(academias)}">
-    <p>No se encontró ninguna academia.</p>
+    <div th:if="${!#lists.isEmpty(academias)}" class="d-flex justify-content-center">
+        <table class="table table-striped table-bordered w-75 shadow-sm rounded text-center align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>RUC</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="academia : ${academias}">
+                <td th:text="${academia.id}">ID</td>
+                <td th:text="${academia.nombre}">Nombre</td>
+                <td th:text="${academia.ruc}">RUC</td>
+                <td>
+                    <a th:href="@{academias/editar/{id}(id=*{academia.id})}" class="btn btn-outline-primary btn-sm">Editar</a>
+                    <a href="#" onclick="eliminarAcademia(this)" class="btn btn-outline-danger btn-sm ms-1">Eliminar</a>
+                    <form th:action="@{academias/eliminar/{id}(id=*{academia.id})}" method="post" class="d-none"></form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <a th:href="@{academias/registrar}" class="btn btn-success btn-sm rounded px-4 py-2 fw-semibold shadow-sm">
+        Registrar
+    </a>
+<!--    <a th:href="@{academias/registrar}">Registrar</a>-->
+
 </div>
-
-<table th:if="${!#lists.isEmpty(academias)}">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>RUC</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="academia : ${academias}">
-        <td th:text="${academia.id}">ID</td>
-        <td th:text="${academia.nombre}">Nombre</td>
-        <td th:text="${academia.ruc}">RUC</td>
-        <td>
-            <a th:href="@{academias/editar/{id}(id=*{academia.id})}">Editar</a>
-            <a href="#" onclick="eliminarAcademia(this)">Eliminar</a>
-            <form th:action="@{academias/eliminar/{id}(id=*{academia.id})}" method="post" class="d-none"></form>
-        </td>
-
-    </tr>
-    </tbody>
-</table>
-
 <br>
-<a th:href="@{academias/registrar}">Registrar</a>
+
 <!--<form th:action="@{/admin/academias/registrar}" method="get">-->
 <!--    <button type="submit">Registrar</button>-->
 <!--</form>-->

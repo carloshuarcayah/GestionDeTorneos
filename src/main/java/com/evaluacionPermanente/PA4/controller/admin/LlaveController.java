@@ -6,6 +6,8 @@ import com.evaluacionPermanente.PA4.repository.KaratecaRepository;
 import com.evaluacionPermanente.PA4.repository.LlaveRepository;
 import com.evaluacionPermanente.PA4.service.LlaveService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +34,10 @@ public class LlaveController {
 
     //CUANLQUIERA DE ESAS DOS TE MANDA AL INDEX
     @GetMapping({"","index"})
-    public String index(Model model)
+    public String index(Model model, @PageableDefault(size = 10) Pageable pageable)
     {
         //NOS DEVUELVE TODAS LAS LLAVES QUE HEOS CREADO, AHORA SOLO NOS FALTARIA ORGANIZARLAS EN LA VISTA
-        model.addAttribute("llaves",llaveRepository.findAll());
+        model.addAttribute("llaves",llaveRepository.findAll(pageable));
         return "/admin/llaves/index";
     }
 
@@ -57,15 +59,27 @@ public class LlaveController {
             if (ganador.equals(llave.getId_karateca1())) {
                 //SI ES ASI, ASEGURAMOS QUE SU ESTADO SEA ACTIVO
                 ganador.setEstado("activo");
-                //ESTADO DE KARATECA 2 PASA A SER ELIMINADO
-                Karateca perdedor = llave.getId_karateca2();
-                perdedor.setEstado("eliminado");
+
+                if(llave.getId_karateca2()!=null){
+                    //ESTADO DE KARATECA 2 PASA A SER ELIMINADO
+                    Karateca perdedor = llave.getId_karateca2();
+                    perdedor.setEstado("eliminado");
+                    karatecaRepository.save(perdedor);//KARATECA 2
+                }
+
                 //GUARDAMOS EL CAMBIO DE ESTADO EN LOS DOS KARATECAS
                 karatecaRepository.save(ganador);//KARATECA 1
-                karatecaRepository.save(perdedor);//KARATECA 2
+
             } else {
-                //NOS ASEGURAMOS QUE KARATECA 2 TENGA EL ESTADO DE ACTIVO
-                ganador.setEstado("activo");
+                if(llave.getId_karateca2()!=null){
+                    //NOS ASEGURAMOS QUE KARATECA 2 TENGA EL ESTADO DE ACTIVO
+                    ganador.setEstado("activo");
+                    //ESTADO DE KARATECA 2 PASA A SER ELIMINADO
+                    Karateca perdedor = llave.getId_karateca2();
+                    perdedor.setEstado("eliminado");
+                    karatecaRepository.save(perdedor);//KARATECA 2
+                }
+
                 //EN CASO EL KARATECA 1 NO SEA EL GANADOR LE ASIGNAMOS EL ESTADO ELIMINADO
                 Karateca perdedor = llave.getId_karateca1();
                 perdedor.setEstado("eliminado");
