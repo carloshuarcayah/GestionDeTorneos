@@ -48,21 +48,35 @@ public class LlaveController {
         //BUSCAMOS AL KARATECA
         Karateca ganador = karatecaRepository.findById(idGanador).orElse(null);
 
-        //SI EXISTEN
+        //SI LOS IDS EXISTEN
         if (llave != null && ganador != null) {
             llave.setGanador(ganador);
             llaveRepository.save(llave);
+
+            //VERIFICAMOS SI EL GANADOR ES EL KARATECA 1
             if (ganador.equals(llave.getId_karateca1())) {
+                //SI ES ASI, ASEGURAMOS QUE SU ESTADO SEA ACTIVO
+                ganador.setEstado("activo");
+                //ESTADO DE KARATECA 2 PASA A SER ELIMINADO
                 Karateca perdedor = llave.getId_karateca2();
                 perdedor.setEstado("eliminado");
-                karatecaRepository.save(perdedor);
+                //GUARDAMOS EL CAMBIO DE ESTADO EN LOS DOS KARATECAS
+                karatecaRepository.save(ganador);//KARATECA 1
+                karatecaRepository.save(perdedor);//KARATECA 2
             } else {
+                //NOS ASEGURAMOS QUE KARATECA 2 TENGA EL ESTADO DE ACTIVO
+                ganador.setEstado("activo");
+                //EN CASO EL KARATECA 1 NO SEA EL GANADOR LE ASIGNAMOS EL ESTADO ELIMINADO
                 Karateca perdedor = llave.getId_karateca1();
                 perdedor.setEstado("eliminado");
-                karatecaRepository.save(perdedor);
+                //GUARDAMOS LOS CAMBIOS DE ESTADO
+                karatecaRepository.save(ganador);//KARATECA2
+                karatecaRepository.save(perdedor);//KARATECA1
             }
+            //MENSAJE DE EXITO AL ASIGNAR UN GANADOR
             redirectAttributes.addFlashAttribute("exito", "Ganador asignado exitosamente.");
         } else {
+            //
             redirectAttributes.addFlashAttribute("error", "Error al asignar ganador.");
         }
 
@@ -71,11 +85,11 @@ public class LlaveController {
 
     @PostMapping("/generar")
     public String generar(RedirectAttributes ra){
-        //VERIFICAMOS QUE HAYA PARTICIPANTES Y QUE TODAS LAS LLAVES SEAN "FINALIZADO"
         //PODRIA HABER CREADO UNA FUNCION QUE AGRUPE ESTAS DOS FUNCIONES
-        if(llaveService.hayParticipantes()&&llaveService.todasLasLlavesHanFinalizado()) {
-            llaveService.generarRonda();
-            //AQUI SE PODRIA GENERAR UN FLASH ATTRIBUTE CON UN MENSAJE DE EXITO SI HAY TIEMPO LO IMPLEMENTO
+        if(llaveService.hayParticipantes()&&llaveService.todasLasLlavesTienenGanador()) {
+
+            llaveService.cerrarLlaves();
+            llaveService.generarRonda();//AQUI SE PODRIA GENERAR UN FLASH ATTRIBUTE CON UN MENSAJE DE EXITO SI HAY TIEMPO LO IMPLEMENTO
         }
         else{
             ra.addFlashAttribute("error", "Las llaves no han terminado");

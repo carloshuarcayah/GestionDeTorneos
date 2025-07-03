@@ -12,38 +12,59 @@
 <div th:if="${exito}" class="alert alert-success w-25 text-center" role="alert" th:text="${exito}"></div>
 <div th:if="${error}" class="alert alert-danger w-25 text-center" role="alert" th:text="${error}"></div>
 
-<table th:if="${!#lists.isEmpty(llaves)}">
-    <thead>
+<table th:if="${!#lists.isEmpty(llaves)}" class="table table-bordered">
+    <thead class="table-dark text-center">
     <tr>
         <th>Karateca 1</th>
         <th>Karateca 2</th>
         <th>Ronda</th>
         <th>Ganador</th>
-        <th>Elegir ganador</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
+    <tr th:each="llave : ${llaves}"
+        th:classappend="${llave.estado == 'finalizado'} ? 'table-secondary' : ''">
 
-    <tr th:each="llave : ${llaves}">
-        <td th:text="${llave.id_karateca1.nombre_completo}">Karateca 1</td>
-        <td th:text="${llave.id_karateca2 != null ? llave.id_karateca2.nombre_completo : 'No hay participante'}">Karateca 2</td>
-        <td th:text="${llave.ronda}">Ronda</td>
-        <td>
-            <div th:if="${llave.ganador != null}" th:text="${llave.ganador.nombre_completo}"></div>
+        <!-- Karateca 1 -->
+        <td th:text="${llave.id_karateca1.nombre_completo}"
+            th:classappend="${llave.ganador != null and llave.ganador.id == llave.id_karateca1.id} ? 'fw-bold text-success'">
         </td>
+
+        <!-- Karateca 2 -->
+        <td th:text="${llave.id_karateca2 != null ? llave.id_karateca2.nombre_completo : 'No hay participante'}"
+            th:classappend="${llave.ganador != null and llave.id_karateca2 != null and llave.ganador.id == llave.id_karateca2.id} ? 'fw-bold text-success'">
+        </td>
+
+        <!-- Ronda -->
+        <td th:text="${llave.ronda}"></td>
+
+        <!-- Ganador -->
         <td>
-            <div>
-                <form th:action="@{/admin/llaves/seleccionarGanador}" method="post" class="d-flex gap-2 align-items-center">
+            <span th:if="${llave.ganador != null}" th:text="${llave.ganador.nombre_completo}"></span>
+            <span th:if="${llave.ganador == null}">Por definir</span>
+        </td>
+
+        <!-- Acciones -->
+        <td>
+            <div th:if="${llave.estado == 'activo'}">
+                <form th:action="@{/admin/llaves/seleccionarGanador}" method="post"
+                      class="d-flex gap-2 align-items-center justify-content-center">
+
                     <input type="hidden" th:name="idLlave" th:value="${llave.id}" />
+
                     <select th:name="idGanador" class="form-select form-select-sm w-auto">
-                        <option value="" disabled selected>-- Seleccione --</option>
-                        <option th:value="${llave.id_karateca1.id}" th:text="${llave.id_karateca1.nombre_completo}"></option>
+                        <option value="" disabled th:selected="${llave.ganador == null}">-- Seleccione --</option>
+                        <option th:value="${llave.id_karateca1.id}" th:text="${llave.id_karateca1.nombre_completo}" th:selected="${llave.ganador == llave.id_karateca1}"></option>
                         <option th:if="${llave.id_karateca2 != null}"
-                                th:value="${llave.id_karateca2.id}" th:text="${llave.id_karateca2.nombre_completo}"></option>
+                                th:value="${llave.id_karateca2.id}" th:text="${llave.id_karateca2.nombre_completo}" th:selected="${llave.ganador== llave.id_karateca2}"></option>
                     </select>
+
                     <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
                 </form>
             </div>
+
+            <span th:if="${llave.estado == 'finalizado'}" class="text-muted fst-italic">Ronda finalizada</span>
         </td>
     </tr>
     </tbody>

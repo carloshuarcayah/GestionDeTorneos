@@ -20,4 +20,7 @@ public interface LlaveRepository extends JpaRepository<Llave, Integer> {
     // PARA OBTENER SOLO LA CANTIDAD
     long countByEstadoIgnoreCase(String estado);
 
+    //CONTAMOS LA CANTIDAD DE LLAVES QUE AUN NO TIENEN GANADOR
+    long countByGanadorIsNull();
+
 }

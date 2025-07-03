@@ -99,7 +99,8 @@ public class LlaveService {
             Llave llave = new Llave();
             llave.setId_karateca1(peleadores.get(peleadores.size() - 1));
             llave.setId_karateca2(null); // opcional: duplicado o null
-            llave.setEstado("finalizado"); //INICIAMOS ESTA RONDA COMO FINALIZADA PORQUE NO HAY RIVAL
+            llave.setGanador(peleadores.get(peleadores.size() - 1));
+            llave.setEstado("activo"); //INICIAMOS ESTA RONDA COMO FINALIZADA PORQUE NO HAY RIVAL
             llave.setRonda(ronda);
             llaveRepository.save(llave);
         }
@@ -114,8 +115,9 @@ public class LlaveService {
         return karatecas>=1;
     }
 
-    public boolean todasLasLlavesHanFinalizado(){
-        return llaveRepository.countByEstadoIgnoreCase("activo")==0;
+    public boolean todasLasLlavesTienenGanador(){
+        //VERIFICAMOS QUE NINGUNA LLAVE SEA NULL
+        return llaveRepository.countByGanadorIsNull()==0;
     }
 
     public void generarRonda(){
@@ -134,5 +136,12 @@ public class LlaveService {
             emparejarPeleadores(peleadores,ronda);
         }
 
+    }
+    public void cerrarLlaves(){
+        List<Llave>llaves=llaveRepository.findByEstado("activo");
+        llaves.forEach(llave->{
+            llave.setEstado("finalizado");
+            llaveRepository.save(llave);
+        });
     }
 }
