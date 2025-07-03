@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Karatecas</title>
+</head>
+<body>
+<a th:href="@{/admin/home}">Regresar</a>
+<h1>Karatecas registrados</h1>
+
+<!-- SI NO HAY KARATECAS -->
+<div th:if="${#lists.isEmpty(karatecas)}">
+    <p>No se encontró ningún karateca.</p>
+</div>
+
+<!-- SI EXISTE ALGUN KARATECA -->
+<table th:if="${!#lists.isEmpty(karatecas)}">
+    <thead>
+<!-- COMO ES LA VISTA DE ADMINISTRADOR SE VERÁN TODOS LOS DATOS EN LA VISTA USUARIO SE LIMITARAN ALGUNOS DATOS-->
+    <tr>
+        <th>ID</th>
+        <th>DNI</th>
+        <th>Nombre</th>
+        <th>Edad</th>
+        <th>Peso</th>
+        <th>Sexo</th>
+        <th>Rango</th>
+        <th>Modalidad</th>
+        <th>Academia</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="karateca : ${karatecas}">
+        <td th:text="${karateca.id}"></td>
+        <td th:text="${karateca.dni}"></td>
+        <td th:text="${karateca.nombre_completo}"></td>
+        <td th:text="${karateca.edad}"></td>
+        <td th:text="${karateca.peso}"></td>
+        <td th:text="${karateca.sexo}"></td>
+        <td th:text="${karateca.rango}"></td>
+        <td th:text="${karateca.modalidad}"></td>
+        <td th:text="${karateca.id_liga.nombre}"></td>
+        <td>
+            <a th:href="@{/admin/karatecas/editar/{id}(id=${karateca.id})}">Editar</a>
+            <a href="#" onclick="eliminarKarateca(this)">Eliminar</a>
+            <form th:action="@{karatecas/eliminar/{id}(id=*{karateca.id})}" method="post" class="d-none"></form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<a th:href="@{/admin/karatecas/registrar}">Registrar</a>
+
+<script>
+    function eliminarKarateca(etiqueta){
+    var ok = confirm("¿Estas seguro de eliminar a este participante?")
+    if(ok){
+    etiqueta.nextElementSibling.submit();
+    }
+    }
+</script>
+</body>
+</html>

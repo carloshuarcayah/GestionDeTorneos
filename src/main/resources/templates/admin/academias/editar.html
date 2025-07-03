@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Academia</title>
+</head>
+<body>
+<a th:href="@{/admin/academias}">regresar</a>
+<h1>Editar academia</h1>
+
+<form th:action="@{/admin/academias/editar/{id}(id=*{id})}" method="post" th:object="${academia}">
+
+  <label for="nombre">Nombre:</label>
+  <input type="text" id="nombre" th:field="*{nombre}" required />
+  <br><br>
+
+  <label for="ruc">RUC:</label>
+  <input type="text" id="ruc" th:field="*{ruc}" maxlength="11" minlength="11" required />
+  <br><br>
+
+  <button type="submit">Guardar cambios</button>
+  <a th:href="@{/admin/academias}">Cancelar</a>
+
+</form>
+
+</body>
+</html>

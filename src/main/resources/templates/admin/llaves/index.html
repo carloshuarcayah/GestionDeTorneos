@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Llaves del Torneo</title>
+</head>
+<body>
+<a th:href="@{/admin/home}">Regresar</a>
+
+<h1>Llaves del Torneo</h1>
+<p>Mensaje prueba</p>
+
+<table th:if="${!#lists.isEmpty(llaves)}">
+    <thead>
+    <tr>
+        <th>Karateca 1</th>
+        <th>Karateca 2</th>
+        <th>Ronda</th>
+        <th>Ganador</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Aquí se mostrarán las llaves dinámicamente -->
+    <tr th:each="llave : ${llaves}">
+        <td th:text="${llave.id_karateca1.nombre_completo}">Karateca 1</td>
+        <td th:text="${llave.id_karateca2 != null ? llave.id_karateca2.nombre_completo : 'BYE'}">Karateca 2</td>
+        <td th:text="${llave.ronda}">Ronda</td>
+        <td th:text="${llave.ganador != null ? llave.ganador.nombre_completo : 'Por definir'}">Ganador</td>
+    </tr>
+    </tbody>
+</table>
+
+<form method="post" th:action="@{/admin/llaves/generar}">
+    <button type="submit">Generar nuevas llaves</button>
+</form>
+
+</body>
+</html>

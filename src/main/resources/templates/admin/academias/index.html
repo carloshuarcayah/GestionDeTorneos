@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Academias</title>
+</head>
+<body>
+<a th:href="@{/admin/home}">Regresar</a>
+
+
+<h1>Academias registradas</h1>
+
+<div th:if="${#lists.isEmpty(academias)}">
+    <p>No se encontró ninguna academia.</p>
+</div>
+
+<table th:if="${!#lists.isEmpty(academias)}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>RUC</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="academia : ${academias}">
+        <td th:text="${academia.id}">ID</td>
+        <td th:text="${academia.nombre}">Nombre</td>
+        <td th:text="${academia.ruc}">RUC</td>
+        <td>
+            <a th:href="@{academias/editar/{id}(id=*{academia.id})}">Editar</a>
+            <a href="#" onclick="eliminarAcademia(this)">Eliminar</a>
+            <form th:action="@{academias/eliminar/{id}(id=*{academia.id})}" method="post" class="d-none"></form>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a th:href="@{academias/registrar}">Registrar</a>
+<!--<form th:action="@{/admin/academias/registrar}" method="get">-->
+<!--    <button type="submit">Registrar</button>-->
+<!--</form>-->
+<script>
+    function eliminarAcademia(etiqueta){
+    var ok = confirm("¿Estas seguro de eliminar a este participante?")
+    if(ok){
+    etiqueta.nextElementSibling.submit();
+    }
+    }
+</script>
+</body>
+</html>
