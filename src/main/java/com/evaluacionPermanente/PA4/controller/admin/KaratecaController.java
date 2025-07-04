@@ -5,6 +5,8 @@ import com.evaluacionPermanente.PA4.repository.AcademiaRepository;
 import com.evaluacionPermanente.PA4.repository.KaratecaRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,8 +25,8 @@ public class KaratecaController {
 
     // LISTAR
     @GetMapping({"","index"})
-    public String index(Model model) {
-        model.addAttribute("karatecas", karatecaRepository.findAll());
+    public String index(Model model,@PageableDefault(size = 10) Pageable pageable) {
+        model.addAttribute("karatecas", karatecaRepository.findAll(pageable));
         return "/admin/karatecas/index";
     }
 

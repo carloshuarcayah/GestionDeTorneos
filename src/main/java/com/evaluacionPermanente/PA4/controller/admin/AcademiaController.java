@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class AcademiaController {
     //PAGINA PARA EDITAR ACADEMIA
     //ENVIAMOS EL ID DE LA ACADEMIA QUE VAMOS A EDITAR POR PATH
     @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Integer id,Model model){
+    public String editar(@PathVariable Integer id, Model model, RedirectAttributes ra){
         //GUARDAMOS LOS DATOS DE LA ACADEMIA A EDITAR EN UNA VARIABLE USANDO SU ID
         //COMO NO ES SEGURO QUE EXISTA ESTE ID SE GUARDA EN UN OPTIONAL
         Optional<Academia> academia = academiaRepository.findById(id);
@@ -49,11 +50,10 @@ public class AcademiaController {
             model.addAttribute("academia",academia.get());
             return "admin/academias/editar";
         }else{
-            //FALTARIA AGREGAR UN RA QUE INDIQUE QUE NO EXISTE
+            ra.addFlashAttribute("errorId","L a academia no se ha encontrado");
             return "redirect:/admin/academias";
         }
     }
-
 
     //REGISTRAMOS LA ACADEMIA EN LA BASE DE DATOS
     @PostMapping("/registrar")

@@ -8,7 +8,9 @@ import java.util.List;
 
 @Repository
 public interface KaratecaRepository extends JpaRepository<Karateca, Integer> {
-    //BUSCAMOS A TODOS LOS KARATECAS QUE SIGAN EN COMPETENCIA
+    //BUSCAMOS A TODOS LOS KARATECAS ACTIVOS O ELIMINADOS
     List<Karateca> findByEstadoIgnoreCase(String estado);
+
+    //CANTIDAD DE KARATECAS ACTIVOS O ELIMINADOS
     long countByEstadoIgnoreCase(String estado);
 }

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin/master.html}">
 <head>
     <meta charset="UTF-8">
     <title>Panel de Administración</title>
@@ -15,40 +17,44 @@
         }
     </style>
 </head>
-<body class="container py-5">
+<body>
+<div layout:fragment="contenido" class="container py-5">
+    <h1 class="mb-4 text-center">Panel de Administración</h1>
 
-<h1 class="mb-4 text-center">Panel de Administración</h1>
+    <div class="datos row text-center fw-bold mb-3 border rounded pt-4 pb-2">
 
-<div class="datos row text-center fw-bold mb-3 border rounded pt-4 pb-2">
+        <div class="col-md-4">
+            Karatecas Registrados
+            <p th:if="${totalKaratecas > 0}" th:text="${totalKaratecas}">0</p>
+            <p th:if="${totalKaratecas == 0}">Aún no hay registros</p>
+        </div>
 
-    <div class="col-md-4">
-        Karatecas Registrados
-        <p th:if="${totalKaratecas > 0}" th:text="${totalKaratecas}">0</p>
-        <p th:if="${totalKaratecas == 0}">Aún no hay registros</p>
+        <div class="col-md-4">
+            Academias Registradas
+            <p th:if="${totalAcademias > 0}" th:text="${totalAcademias}">0</p>
+            <p th:if="${totalAcademias == 0}">Aún no hay registros</p>
+        </div>
+
+        <div class="col-md-4">
+            Ronda Actual
+            <p th:if="${rondaActual != null}" th:text="${rondaActual}">Ronda X</p>
+            <p th:if="${rondaActual == null}">Aún no hay registros</p>
+        </div>
     </div>
 
-    <div class="col-md-4">
-        Academias Registradas
-        <p th:if="${totalAcademias > 0}" th:text="${totalAcademias}">0</p>
-        <p th:if="${totalAcademias == 0}">Aún no hay registros</p>
-    </div>
-
-    <div class="col-md-4">
-        Ronda Actual
-        <p th:if="${rondaActual != null}" th:text="${rondaActual}">Ronda X</p>
-        <p th:if="${rondaActual == null}">Aún no hay registros</p>
+    <!-- 📁 Navegación -->
+    <div class="row mt-2">
+        <div class="col d-flex justify-content-center gap-3">
+            <a th:href="@{/admin/karatecas}" class="btn btn-success col-md-4">Ir a Karatecas</a>
+            <a th:href="@{/admin/academias}" class="btn btn-primary col-md-4">Ir a Academias</a>
+            <a th:href="@{/admin/llaves}" class="btn btn-warning col-md-4">Ir a Llaves</a>
+        </div>
     </div>
 </div>
 
-<!-- 📁 Navegación -->
-<div class="row mt-2">
-    <div class="col d-flex justify-content-center gap-3">
-        <a th:href="@{/admin/karatecas}" class="btn btn-success col-md-4">Ir a Karatecas</a>
-        <a th:href="@{/admin/academias}" class="btn btn-primary col-md-4">Ir a Academias</a>
-        <a th:href="@{/admin/llaves}" class="btn btn-warning col-md-4">Ir a Llaves</a>
-    </div>
+<div layout:fragment="scrpits">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

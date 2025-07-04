@@ -22,6 +22,7 @@ public class Llave {
         @Column(nullable = false)
         private String ronda;
 
+        //AGREMAOS ESTA VARIABLE PARA SABER SI LA LLAVE HA TERMINADO
         @Column(nullable = false)
         private String estado = "activo";
 
