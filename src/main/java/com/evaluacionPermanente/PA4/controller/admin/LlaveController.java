@@ -43,18 +43,14 @@ public class LlaveController {
 
     @PostMapping("/seleccionarGanador")
     public String seleccionarGanador(@RequestParam int idLlave, @RequestParam int idGanador, RedirectAttributes redirectAttributes) {
-
         // SELECCIONAMOS LA LLAVE QUE VAMOS A MODIFICAR
         Llave llave = llaveRepository.findById(idLlave).orElse(null);
-
         //BUSCAMOS AL KARATECA
         Karateca ganador = karatecaRepository.findById(idGanador).orElse(null);
-
         //SI LOS IDS EXISTEN
         if (llave != null && ganador != null) {
             llave.setGanador(ganador);
             llaveRepository.save(llave);
-
             //VERIFICAMOS SI EL GANADOR ES EL KARATECA 1
             if (ganador.equals(llave.getId_karateca1())) {
                 //SI ES ASI, ASEGURAMOS QUE SU ESTADO SEA ACTIVO
@@ -66,10 +62,8 @@ public class LlaveController {
                     perdedor.setEstado("eliminado");
                     karatecaRepository.save(perdedor);//KARATECA 2
                 }
-
                 //GUARDAMOS EL CAMBIO DE ESTADO EN LOS DOS KARATECAS
                 karatecaRepository.save(ganador);//KARATECA 1
-
             } else {
                 if(llave.getId_karateca2()!=null){
                     //NOS ASEGURAMOS QUE KARATECA 2 TENGA EL ESTADO DE ACTIVO
@@ -79,7 +73,6 @@ public class LlaveController {
                     perdedor.setEstado("eliminado");
                     karatecaRepository.save(perdedor);//KARATECA 2
                 }
-
                 //EN CASO EL KARATECA 1 NO SEA EL GANADOR LE ASIGNAMOS EL ESTADO ELIMINADO
                 Karateca perdedor = llave.getId_karateca1();
                 perdedor.setEstado("eliminado");

@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 @Entity
 public class Karateca {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_karateca")
@@ -43,11 +42,9 @@ public class Karateca {
     @NotBlank
     @Column(nullable = false)
     private String modalidad;
-
     //HAY DOS ESTADOS "ACTIVO" O "ELIMINADO"
     @Column(nullable = false)
     private String estado;//
-
     @ManyToOne
     @JoinColumn(name = "id_liga", referencedColumnName = "id_liga",nullable = false)
     private Academia id_liga;
